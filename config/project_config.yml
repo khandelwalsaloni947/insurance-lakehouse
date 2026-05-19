@@ -1,0 +1,17 @@
+project:
+  name: insurance-lakehouse-databricks-aws
+  company: Rheinland Versicherung AG
+  cloud: AWS
+  platform: Databricks
+
+s3:
+  bucket: "s3a://insurance-lakehouse-project-saumya/"
+  raw_base_path: s3a://insurance-lakehouse-project-saumya/raw"
+  checkpoints_path: "s3a://insurance-lakehouse-project-saumya/checkpoints"
+
+catalog:
+  name: insurance_lakehouse
+  bronze_schema: bronze
+  silver_schema: silver
+  gold_schema: gold
+  quarantine_schema: quarantine
