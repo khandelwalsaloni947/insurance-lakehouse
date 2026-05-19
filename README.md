@@ -8,7 +8,7 @@ This project builds a modern insurance lakehouse using:
 - Delta Lake
 
 ## Project Architecture
-Raw → Bronze → Silver → Gold
+Raw → Bronze → Silver → Quarantine → Gold
 
 ## Datasets
 - customers
@@ -23,6 +23,16 @@ Raw → Bronze → Silver → Gold
 - Raw data write to S3
 - Bronze Delta ingestion
 - Validation checks
+
+## Day 2 Completed
+- Silver layer created with data validation
+- GDPR & PII handling implemented (hashing + masking)
+- Quarantine layer implemented for invalid records
+- Data quality checks (Bronze vs Silver comparison)
+- Foreign key validations (claims, policies, customers, payments)
+- Payment + fraud validation rules applied
+- Data quality summary report generated
+- GDPR documentation completed
 
 ## Technologies Used
 - Databricks
