@@ -1,0 +1,9 @@
+catalog: insurance_lakehouse
+schemas:
+  silver: silver
+  gold: gold
+risk_bands:
+  low_max: 29
+  medium_min: 30
+  medium_max: 69
+  high_min: 70
