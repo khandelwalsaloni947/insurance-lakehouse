@@ -1,0 +1,30 @@
+project:
+  name: industrial_insurance_lakehouse
+  company: Rheinland Versicherung AG
+  cloud: AWS
+  platform: Databricks
+
+catalog: insurance_lakehouse
+
+schemas:
+  bronze: bronze
+  silver: silver
+  gold: gold
+  quarantine: quarantine
+
+gold_tables:
+  - gold_claims_overview
+  - gold_policy_performance
+  - gold_customer_risk_profile
+  - gold_claims_payment_summary
+  - gold_fraud_risk_summary
+  - gold_agent_performance
+  - gold_claim_fraud_features
+
+dashboard_views:
+  - vw_executive_insurance_overview
+  - vw_claims_operations
+  - vw_policy_portfolio
+  - vw_fraud_risk_monitoring
+  - vw_agent_regional_performance
+  - vw_data_quality_monitoring

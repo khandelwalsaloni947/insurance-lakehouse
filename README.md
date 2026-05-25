@@ -6,22 +6,16 @@ This project builds a modern insurance lakehouse for a fictional German insuranc
 
 It simulates a real-world production-style data platform for insurance analytics, fraud detection, BI reporting, and AI-ready feature engineering.
 
----
+## Architecture
 
-## Project Architecture
-Raw → Bronze → Silver → Quarantine → Gold
+Bronze → Silver → Quarantine → Gold
 
-
-- **Raw**: Unprocessed data stored in AWS S3  
-- **Bronze**: Ingested raw data into Delta tables  
-- **Silver**: Cleaned, validated, GDPR-aware trusted data  
-- **Quarantine**: Invalid or suspicious records  
-- **Gold**: Business-ready analytics and ML feature tables  
-
----
+- **Bronze**: Ingested raw data from AWS S3 in Delta format  
+- **Silver**: Cleaned, validated, and GDPR-aware trusted data  
+- **Quarantine**: Invalid or suspicious records isolated for audit  
+- **Gold**: Business-ready analytics and AI/ML feature tables  
 
 ## Datasets
-
 - customers  
 - policies  
 - claims  
@@ -29,40 +23,66 @@ Raw → Bronze → Silver → Quarantine → Gold
 - agents  
 - fraud_indicators  
 
----
-
-## Day 1 Work
+## 🟢 Day 1 — Data Creation & Bronze Layer 
 
 - Synthetic insurance data generation using PySpark  
-- Data written to AWS S3 (raw layer)  
+- Raw data stored in AWS S3  
 - Bronze Delta ingestion completed  
-- Basic validation and schema checks performed  
-- Partitioned dataset structure created for scalability  
+- Partitioned scalable dataset design  
+- Initial validation checks  
 
----
+I generated synthetic insurance data and created Bronze layer tables in Databricks
 
-## Day 2 Work (Silver Layer)
+https://dbc-41a10911-9515.cloud.databricks.com/editor/files/2977085487728008?o=7474651570114183
 
-- Silver tables created with cleaned and standardized data  
-- Data quality rules applied (null checks, duplicates, validation rules)  
-- Foreign key relationships validated:
+## Day 1 Summary
+
+On Day 1, I built the foundation of the insurance lakehouse.
+
+- Generated synthetic insurance data using PySpark
+- Stored raw data in AWS S3
+- Created Bronze layer tables in Databricks
+- Validated initial dataset structure and partitions
+
+👉 Result: Raw insurance data successfully landed and Bronze layer was created.
+
+
+## 🟡 Day 2 — Silver Layer & GDPR
+
+- Silver tables created with cleaned data  
+- Data quality rules applied  
+- FK validation:
   - claims ↔ policies  
   - claims ↔ customers  
   - payments ↔ claims  
-- GDPR handling implemented:
-  - masking / hashing of sensitive fields  
+- GDPR implemented:
+  - masking & hashing of PII fields  
 - Quarantine tables created for invalid records  
 - Data quality reporting completed  
-- Bronze vs Silver reconciliation performed  
 
----
+📸 **Screenshot to add here:**  
+Silver or Quarantine table output showing cleaned data
 
-## Day 3 Work (Gold Layer)
+## Day 2 Summary
+
+On Day 2, I focused on data cleaning and governance.
+
+- Created Silver layer with cleaned and standardized data
+- Applied data quality rules (null checks, duplicates, validation)
+- Established relationships between claims, policies, and customers
+- Implemented GDPR compliance (masking/hashing sensitive fields)
+- Created quarantine tables for invalid records
+
+👉 Result: Trusted and clean Silver data was created with governance controls.
+
+
+
+## 🔵 Day 3 — Gold Layer & Analytics 
 
 - Business-ready Gold analytics tables created  
-- KPI-driven insurance metrics implemented  
+- Insurance KPIs implemented  
 - Fraud risk analytics developed  
-- Agent and customer performance analysis added  
+- Agent performance metrics built  
 
 ### Gold Tables
 
@@ -74,39 +94,70 @@ Raw → Bronze → Silver → Quarantine → Gold
 - gold_agent_performance  
 - gold_claim_fraud_features  
 
----
+📸 **Screenshot to add here:**  
+✔ Gold KPI table output OR dashboard view
 
-## AI-Ready Feature Engineering
+
+## 🤖 AI-Ready Feature Engineering
 
 The `gold_claim_fraud_features` table is designed for machine learning use cases:
 
-- One row per claim (clean ML grain)  
+- One row per claim (clean ML grain)
 - Combines:
   - claim features  
   - policy context  
-  - customer demographics  
+  - customer attributes  
   - payment behavior  
   - fraud signals  
 
 Used for:
-- fraud detection models  
-- risk scoring  
-- anomaly detection  
+- Fraud detection models  
+- Risk scoring  
+- Anomaly detection  
 
 ---
 
-## Performance Optimization
+## ⚙️ Performance Optimization
 
-- Column pruning before joins applied  
-- Aggregation before joins used for payments  
-- Avoided one-to-many join duplication  
-- Delta Lake format used for all Gold tables  
-- Spark explain plan reviewed for optimization  
-- Efficient join strategy followed  
+- Column pruning before joins  
+- Pre-aggregation for performance  
+- Avoided many-to-many join duplication  
+- Delta Lake format for all tables  
+- Efficient Spark execution plans  
 
----
+## Day 3 Summary
 
-## Business Value
+On Day 3, I built business-ready analytics layers.
+
+- Created Gold tables for insurance KPIs
+- Built claims, policies, fraud, and customer analytics
+- Developed agent performance metrics
+- Created AI-ready fraud feature dataset
+
+👉 Result: Business-ready Gold layer was created for dashboards and AI use cases.
+
+
+
+## 🟣 Governance & GDPR 
+
+- PII fields identified and restricted  
+- Hashing applied to sensitive identifiers  
+- Role-based access model implemented  
+- Gold layer contains no raw PII  
+- Compliance validated using exposure checks  
+
+📸 **Screenshot to add here:**  
+✔ exposed PII fields = []
+
+## Governance Summary
+
+- Verified that no PII fields are exposed in Gold views
+- Ensured GDPR compliance across all dashboard layers
+- Confirmed secure data design with no sensitive leakage
+
+👉 Result: Fully GDPR-compliant analytics layer.
+
+## 📊 Business Value
 
 This lakehouse enables:
 
@@ -117,22 +168,9 @@ This lakehouse enables:
 - Agent performance tracking  
 - AI/ML-ready datasets  
 
----
+## Final Project Summary
 
-## Technologies Used
+This project demonstrates an end-to-end cloud data engineering pipeline built using Databricks and AWS, covering data ingestion, transformation, governance, analytics, and AI-ready feature engineering.
 
-- Databricks  
-- AWS S3  
-- PySpark  
-- Spark SQL  
-- Delta Lake  
+👉 Result: Production-style insurance lakehouse ready for BI and ML use cases.
 
----
-
-## Final Summary
-
-This project demonstrates an end-to-end modern **lakehouse architecture** including:
-
-Raw ingestion → Data cleaning → Data governance → Analytics → AI-ready feature engineering
-
-It simulates a real insurance analytics platform used in enterprise environments.

@@ -118,4 +118,9 @@ gold_claims_overview = (
     )
 )
 gold_claims_overview.write.mode("overwrite").format("delta").saveAsTable(t(GOLD_SCHEMA, "gold_claims_overview"))
-display(gold_claims_overview.limit(20))
+display(gold_claims_overview.limit(10))
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM insurance_lakehouse.gold.vw_executive_insurance_overview;

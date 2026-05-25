@@ -1,6 +1,6 @@
-#  KPI Definitions (Gold Layer)
+# KPI Definitions (Gold Layer)
 
-##  Purpose
+## Purpose
 
 This document defines all business KPIs used in the Gold layer of the Insurance Lakehouse project for **Rheinland Versicherung AG**.
 
@@ -15,8 +15,6 @@ This ensures transparency, consistency, and auditability across all analytics ou
 ---
 
 # 👥 Customer KPIs
-
----
 
 ## total_customers
 
@@ -36,8 +34,6 @@ COUNT(DISTINCT customer_id)
 ---
 
 # 📑 Policy KPIs
-
----
 
 ## total_policies
 
@@ -62,13 +58,13 @@ COUNT(DISTINCT policy_id)
 Number of currently active insurance policies.
 
 ### Formula
-COUNT(policy_id WHERE policy_status = 'active')
+COUNT(CASE WHEN policy_status = 'active' THEN 1 END)
 
 ### Input Tables
 - silver_policies
 
 ### Data Quality Risks
-- Incorrect status values (typos, inconsistent casing)
+- Incorrect status values
 - Missing policy_status
 
 ---
@@ -93,7 +89,7 @@ SUM(premium_amount)
 ## estimated_commission
 
 ### Business Meaning
-Estimated earnings for agents based on policy premiums.
+Estimated earnings for agents.
 
 ### Formula
 SUM(premium_amount * commission_rate)
@@ -104,13 +100,11 @@ SUM(premium_amount * commission_rate)
 
 ### Data Quality Risks
 - Missing commission_rate
-- Incorrect agent-policy mapping
+- Incorrect mapping
 
 ---
 
 # 🚨 Claims KPIs
-
----
 
 ## total_claims
 
@@ -124,7 +118,7 @@ COUNT(claim_id)
 - silver_claims
 
 ### Data Quality Risks
-- Duplicate claim entries
+- Duplicate claims
 - Missing claim_id
 
 ---
@@ -135,14 +129,14 @@ COUNT(claim_id)
 Claims currently under processing.
 
 ### Formula
-COUNT(claim_id WHERE claim_status = 'open')
+COUNT(CASE WHEN claim_status = 'open' THEN 1 END)
 
 ### Input Tables
 - silver_claims
 
 ### Data Quality Risks
-- Invalid claim_status values
-- Status not updated in time
+- Wrong status values
+- Delayed updates
 
 ---
 
@@ -152,55 +146,54 @@ COUNT(claim_id WHERE claim_status = 'open')
 Claims approved for payout.
 
 ### Formula
-COUNT(claim_id WHERE claim_status = 'approved')
+COUNT(CASE WHEN claim_status = 'approved' THEN 1 END)
 
 ### Input Tables
 - silver_claims
 
 ### Data Quality Risks
-- Delayed status updates
-- Incorrect approvals due to bad data
+- Late updates
+- Wrong approvals
 
 ---
 
 ## rejected_claims
 
 ### Business Meaning
-Claims rejected after validation or fraud checks.
+Claims rejected after checks.
 
 ### Formula
-COUNT(claim_id WHERE claim_status = 'rejected')
+COUNT(CASE WHEN claim_status = 'rejected' THEN 1 END)
 
 ### Input Tables
 - silver_claims
 
 ### Data Quality Risks
-- Misclassification of claim status
-- Missing rejection reason
+- Wrong classification
+- Missing reason
 
 ---
 
 ## paid_claims
 
 ### Business Meaning
-Claims fully settled and paid.
+Claims fully paid.
 
 ### Formula
-COUNT(claim_id WHERE claim_status = 'paid')
+COUNT(CASE WHEN claim_status = 'paid' THEN 1 END)
 
 ### Input Tables
 - silver_claims
 
 ### Data Quality Risks
-- Payment not reflected in status
-- Partial payments not tracked
+- Missing payment updates
 
 ---
 
 ## total_claim_amount
 
 ### Business Meaning
-Total financial exposure from insurance claims.
+Total claim cost.
 
 ### Formula
 SUM(claim_amount)
@@ -209,15 +202,15 @@ SUM(claim_amount)
 - silver_claims
 
 ### Data Quality Risks
-- Negative claim amounts
-- Duplicate claims inflating totals
+- Negative values
+- Duplicates
 
 ---
 
 ## average_claim_amount
 
 ### Business Meaning
-Average claim size across all claims.
+Average claim size.
 
 ### Formula
 AVG(claim_amount)
@@ -226,57 +219,54 @@ AVG(claim_amount)
 - silver_claims
 
 ### Data Quality Risks
-- Outliers skewing average
-- Missing claim amounts
+- Outliers
+- Missing values
 
 ---
 
 # 💰 Payment KPIs
 
----
-
 ## total_paid_amount
 
 ### Business Meaning
-Total money paid out for insurance claims.
+Total paid money.
 
 ### Formula
-SUM(payment_amount WHERE payment_status = 'paid')
+SUM(CASE WHEN payment_status = 'paid' THEN payment_amount ELSE 0 END)
 
 ### Input Tables
 - silver_payments
 
 ### Data Quality Risks
-- Missing payment_status
-- Duplicate payment records
-- Partial payments not reconciled
+- Missing status
+- Duplicate payments
 
 ---
 
 ## payment_rejection_rate
 
 ### Business Meaning
-Percentage of rejected payments.
+Rejected payment ratio.
 
 ### Formula
-COUNT(rejected payments) / COUNT(all payments)
+COUNT(CASE WHEN payment_status = 'rejected' THEN 1 END) / COUNT(*)
 
 ### Input Tables
 - silver_payments
 
 ### Data Quality Risks
-- Incorrect payment status values
-- Missing payment records
+- Wrong status values
+- Missing records
 
 ---
 
 ## average_payment_delay_days
 
 ### Business Meaning
-Average time taken to process claim payments.
+Average payment delay.
 
 ### Formula
-AVG(payment_date - claim_date)
+AVG(DATEDIFF(payment_date, claim_date))
 
 ### Input Tables
 - silver_claims
@@ -284,35 +274,33 @@ AVG(payment_date - claim_date)
 
 ### Data Quality Risks
 - Missing dates
-- Negative delays due to bad timestamps
+- Negative values
 
 ---
 
-# ⚠️ Fraud & Risk KPIs
-
----
+# ⚠️ Fraud KPIs
 
 ## fraud_risk_rate
 
 ### Business Meaning
-Proportion of claims flagged as potentially fraudulent.
+Fraud probability ratio.
 
 ### Formula
-COUNT(fraud_flag = true) / COUNT(all claims)
+COUNT(CASE WHEN fraud_flag = true THEN 1 END) / COUNT(*)
 
 ### Input Tables
 - silver_claims
 
 ### Data Quality Risks
-- Incorrect fraud_flag assignment
-- Bias in fraud detection rules
+- Wrong fraud labeling
+- Bias
 
 ---
 
 ## average_risk_score
 
 ### Business Meaning
-Average risk score of claims based on fraud indicators.
+Average fraud risk score.
 
 ### Formula
 AVG(risk_score)
@@ -321,19 +309,17 @@ AVG(risk_score)
 - silver_fraud_indicators
 
 ### Data Quality Risks
-- Missing risk scores
-- Improper scoring distribution
+- Missing values
+- Skewed scores
 
 ---
 
 # 📉 Business Ratio KPIs
 
----
-
 ## claims_ratio
 
 ### Business Meaning
-Measures insurance profitability and risk exposure.
+Loss ratio of insurance.
 
 ### Formula
 SUM(claim_amount) / SUM(premium_amount)
@@ -343,25 +329,24 @@ SUM(claim_amount) / SUM(premium_amount)
 - silver_policies
 
 ### Data Quality Risks
-- Mismatched joins between claims and policies
-- Inflation due to duplicate records
+- Join duplication
+- Wrong aggregation
 
 ---
 
-# 🧠 FINAL NOTES
+# 🧠 KPI GOVERNANCE RULE
 
-- Every KPI must be traceable to Silver layer
-- No KPI should mix inconsistent grains
-- All formulas must be validated before Gold aggregation
-- Data quality risks must be documented for audit and governance
+- Use only Silver data
+- No duplicates
+- Validate before Gold
+- Ensure correct grain
 
 ---
 
-# 🚀 OUTCOME
+# 🚀 RESULT
 
 This KPI layer enables:
-- Executive dashboards
-- Financial reporting
-- Fraud monitoring
-- Risk analytics
-- AI/ML feature engineering
+- Dashboards
+- Fraud detection
+- Risk analysis
+- AI/ML features

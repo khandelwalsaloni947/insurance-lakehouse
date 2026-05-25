@@ -1,0 +1,6 @@
+DESCRIBE TABLE insurance_lakehouse.gold.vw_executive_insurance_overview;
+DESCRIBE TABLE insurance_lakehouse.gold.vw_claims_operations;
+DESCRIBE TABLE insurance_lakehouse.gold.vw_policy_portfolio;
+DESCRIBE TABLE insurance_lakehouse.gold.vw_fraud_risk_monitoring;
+DESCRIBE TABLE insurance_lakehouse.gold.vw_agent_regional_performance;
+DESCRIBE TABLE insurance_lakehouse.gold.vw_data_quality_monitoring;
